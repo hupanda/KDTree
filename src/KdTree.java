@@ -1,27 +1,25 @@
 public class KdTree 
 {
-    private int size;
     private Node root;
     
     public KdTree()
     {
-        size = 0;
         root = null;
     }
     
     public boolean isEmpty()
     {
-        return size == 0;
+        return root == null;
     }
     
     public int size()                               
     {
-        return size;
+    	if (root == null) return 0;
+        return root.size();
     }
     
     public void insert(Point2D p)
     {
-        size++;
         if (root != null)
         {
             root.insert(p);
@@ -39,6 +37,7 @@ public class KdTree
     
     public void draw()                              
     {
+    	if (root == null) return;
         root.draw();
     }
     
@@ -70,6 +69,14 @@ public class KdTree
             this.right = null;
             this.xDimension = xDimension;
             this.rect = rect;
+        }
+        
+        public int size()
+        {
+        	int size = 1;
+        	if (left != null) size += left.size();
+        	if (right != null) size += right.size();
+        	return size;
         }
         
         public boolean contains(Point2D q)
@@ -126,23 +133,48 @@ public class KdTree
             return result;
         }
         
-        public Point2D nearest(Point2D q, Point2D temp)
+        public Point2D nearest(Point2D target, Point2D temp)
         {
             Point2D result;
             if (temp != null)
             {
                 result = temp;
-                if (rect.distanceSquaredTo(q) > q.distanceSquaredTo(temp)) return temp;
-                if (q.distanceSquaredTo(q) < q.distanceSquaredTo(temp)) result = q;
+                if (rect.distanceSquaredTo(target) > target.distanceSquaredTo(temp)) return temp;
+                if (target.distanceSquaredTo(p) < target.distanceSquaredTo(temp)) result = p;
             }
             else
             {
-                result = q;
+                result = p;
             }
-            if (left != null) result = left.nearest(q, result);
-            if (right != null) result = right.nearest(q, result);
+            if (left != null) result = left.nearest(target, result);
+            if (right != null) result = right.nearest(target, result);
             return result;
         }
+        
     }
+    
+	public static void main(String[] args)
+	{
+		KdTree set = new KdTree();
+		for (int i=0;i<100000;i++)
+		{
+			try
+			{
+				Point2D p = new Point2D(StdRandom.uniform(), StdRandom.uniform()); 
+				set.insert(p);
+				System.out.println(i + ": " + set.size() + " : " + p.toString());
+			}
+			catch(Exception x)
+			{
+				System.out.println(i + ":" + x.getMessage());
+			}
+		}
+		
+		Point2D n = set.nearest(new Point2D(0, 0));
+		System.out.println(set.contains(n));
+		
+		
+		
+	}
     
 }

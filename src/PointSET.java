@@ -68,4 +68,23 @@ public class PointSET
 		return result;
 	}
 	
+	public static void main(String[] args)
+	{
+		PointSET set = new PointSET();
+		for (int i=0;i<1000;i++)
+		{
+			try
+			{
+				set.insert(new Point2D(StdRandom.uniform(), StdRandom.uniform()));
+				System.out.println(i + ": " + set.size());
+			}
+			catch(Exception x)
+			{
+				System.out.println(i + ":" + x.getMessage());
+			}
+		}
+		
+		
+	}
+	
 }
